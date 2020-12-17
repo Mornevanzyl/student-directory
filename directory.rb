@@ -42,10 +42,20 @@ def filter_output(student_dir)
   puts "Enter name search character(s) or hit enter to ignore"
   filter_string = gets.chomp.capitalize
 
+  # Filter option for maximum name length
+  puts "Enter maximum length of name or hit enter to ignore this option"
+  filter_length = gets.chomp
+
   student_dir.entries.each do |student|
     # Check name string
     if !filter_string.empty?
       unless student[:name] =~ /^#{filter_string}/
+        next
+      end
+    end
+    # Check name length
+    if !filter_length.empty?
+      unless student[:name].length <= filter_length.to_i
         next
       end
     end
