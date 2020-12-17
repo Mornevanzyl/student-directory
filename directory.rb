@@ -28,8 +28,33 @@ def input_students
     name = gets.chomp
   end
   # return the array of input_students
-  students
+  students = filter_output(students)
 end
+
+def filter_output(student_dir)
+  ret_students = []
+  # Filter option for start name string match
+  puts "You can filter output based on name search character(s)"
+  puts "Would you like to apply any filter criteria? Enter 'yes' or leave empty to skip"
+
+  return if gets.chomp.empty?
+
+  puts "Enter name search character(s) or hit enter to ignore"
+  filter_string = gets.chomp.capitalize
+
+  student_dir.entries.each do |student|
+    # Check name string
+    if !filter_string.empty?
+      unless student[:name] =~ /^#{filter_string}/
+        next
+      end
+    end
+    ret_students << student
+  end
+
+  return ret_students
+end
+
 
 # Call methods to print student list
 students = input_students
