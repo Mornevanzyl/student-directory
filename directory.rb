@@ -4,9 +4,26 @@ def print_header
 end
 
 def print(students)
-  students.each_with_index do |student, idx|
-    puts "#{idx + 1}. #{student[:name]} (#{student[:cohort]} cohort)"
+
+  # # Iterate over students arry and print individual entries
+  # students.each_with_index do |student, idx|
+  #   puts "#{idx + 1}. #{student[:name]} (#{student[:cohort]} cohort)"
+  # end
+  #
+  # # Alternative to .each code using while loop
+  # idx = 0
+  # while idx < students.length
+  #   puts "#{idx + 1}. #{students[idx][:name]} (#{students[idx][:cohort]} cohort)"
+  #   idx += 1
+  # end
+
+  # Alternative to .each and while loop using until loop
+  idx = 0
+  until idx >= students.length
+    puts "#{idx + 1}. #{students[idx][:name]} (#{students[idx][:cohort]} cohort)"
+    idx += 1
   end
+
 end
 
 def print_footer(students)
@@ -37,7 +54,7 @@ def filter_output(student_dir)
   puts "You can filter output based on name search character(s)"
   puts "Would you like to apply any filter criteria? Enter 'yes' or leave empty to skip"
 
-  return if gets.chomp.empty?
+  return student_dir if gets.chomp.empty?
 
   puts "Enter name search character(s) or hit enter to ignore"
   filter_string = gets.chomp.capitalize
