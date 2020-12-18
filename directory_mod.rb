@@ -1,10 +1,32 @@
 require './class_directory'
 require './class_student'
 
-def input_students
-
+def interactive_menu
   # Instantiate our directory class
   student_dir = Directory.new('student', 'villain academy')
+
+  loop do
+    puts "1. Input the students"
+    puts "2. Show the students"
+    puts "9. Exit"
+    selection = gets.chomp
+    case selection
+    when "1"
+      input_students(student_dir)
+    when "2"
+      print_students(student_dir)
+    when "9"
+      exit
+    else
+      puts "You have entered an invalid selection. Please try again"
+    end
+  end
+end
+
+def input_students(student_dir)
+
+  # # Instantiate our directory class
+  # student_dir = Directory.new('student', 'villain academy')
 
   puts "Let's capture some student data: -"
   puts "To finish, just hit return twice"
@@ -19,6 +41,9 @@ def input_students
     student_dir.add_entry(student)
   end
 
+end
+
+def print_students(student_dir)
   # Call method to see if user wants to apply any filter criteria
   filter_output(student_dir)
 
@@ -49,6 +74,9 @@ def input_field(input_message, multiple=false, is_symbol=false)
 end
 
 def filter_output(student_dir)
+
+  # Reset visible status for entire list
+  student_dir.set_all_visible
 
   # Filter option for start name string match
   puts "You can filter output based on name characters, name length or student cohort"
@@ -93,7 +121,9 @@ def filter_output(student_dir)
 end
 
 # Call methods to print student list
-input_students
+# input_students
 # print_header
 # print(students)
 # print_footer(students)
+
+interactive_menu

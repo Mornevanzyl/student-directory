@@ -11,6 +11,10 @@ class Directory
     @entries.push(entry)
   end
 
+  def set_all_visible
+    @entries.each { |entry| entry.visible = true }
+  end
+
   def print
     print_count = 0
 
