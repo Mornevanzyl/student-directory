@@ -31,20 +31,26 @@ class Directory
     end
   end
 
+  def print_output_empty
+    print_count = 0
+    @entries.each { |entry| return false if entry.visible }
+    return true
+  end
+
   def print_by_cohort
     print_count = 0
 
-    p entries
     @entries.map! { |entry| [entry.cohort.to_s.capitalize, entry] }
-    p entries
+    @entries.sort! { |a,b| b[0] <=> a[0] }
+
 
     head_string = "The #{@type} Directory for #{@owner}"
     puts head_string
     puts "".center(head_string.length, "-")
 
     @entries.each do |entry|
-      if entry.visible
-        puts "#{entry.name}, from #{entry.country_of_origin} is part of the #{entry.cohort} cohort. Hobbies include #{entry.hobbies.join(', ')}"
+      if entry[1].visible
+        puts "#{entry[1].name}, from #{entry[1].country_of_origin} is part of the #{entry[1].cohort} cohort. Hobbies include #{entry[1].hobbies.join(', ')}"
         print_count += 1
       end
     end

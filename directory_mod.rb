@@ -11,7 +11,7 @@ def input_students
 
   loop do
     name = input_field("Please enter the student's name")
-    break if name.empty?
+    break if (name.empty? || name == "")
     cohort = input_field("Enter the student cohort", nil, true)
     country = input_field("Enter student country of origin")
     hobbies = input_field("Enter one or more hobbies, return twice to finish", true)
@@ -21,6 +21,11 @@ def input_students
 
   # Call method to see if user wants to apply any filter criteria
   filter_output(student_dir)
+
+  if student_dir.print_output_empty
+    puts "Your list is empty. Nothing will be printed"
+    return
+  end
 
   puts "Enter 'yes' to sort your output by cohort, hit enter for standard output"
   gets.chomp.downcase == "yes" ? student_dir.print_by_cohort : student_dir.print
@@ -37,7 +42,8 @@ def input_field(input_message, multiple=false, is_symbol=false)
       final_input << input
     end
   else
-    final_input = gets.chomp.capitalize
+    # final_input = gets.chomp.capitalize
+    final_input = gets.gsub(/\s|\n$/, "")
   end
   return is_symbol ? final_input.downcase.to_sym : final_input
 end
