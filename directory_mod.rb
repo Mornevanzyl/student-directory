@@ -1,32 +1,36 @@
 require './class_directory'
 require './class_student'
 
-def interactive_menu
-  # Instantiate our directory class
-  student_dir = Directory.new('student', 'villain academy')
+# Instantiate our directory class
+@student_dir = Directory.new('student', 'villain academy')
 
+def interactive_menu
   loop do
-    puts "1. Input the students"
-    puts "2. Show the students"
-    puts "9. Exit"
-    selection = gets.chomp
-    case selection
-    when "1"
-      input_students(student_dir)
-    when "2"
-      print_students(student_dir)
-    when "9"
-      exit
-    else
-      puts "You have entered an invalid selection. Please try again"
-    end
+    print_menu
+    process(gets.chomp)
   end
 end
 
-def input_students(student_dir)
+def print_menu
+  puts "1. Input the students"
+  puts "2. Show the students"
+  puts "9. Exit"
+end
 
-  # # Instantiate our directory class
-  # student_dir = Directory.new('student', 'villain academy')
+def process(selection)
+  case selection
+  when "1"
+    input_students()
+  when "2"
+    print_students()
+  when "9"
+    exit
+  else
+    puts "You have entered an invalid selection. Please try again"
+  end
+end
+
+def input_students()
 
   puts "Let's capture some student data: -"
   puts "To finish, just hit return twice"
@@ -38,22 +42,22 @@ def input_students(student_dir)
     country = input_field("Enter student country of origin")
     hobbies = input_field("Enter one or more hobbies, return twice to finish", true)
     student = Student.new(name, cohort, country, hobbies)
-    student_dir.add_entry(student)
+    @student_dir.add_entry(student)
   end
 
 end
 
-def print_students(student_dir)
+def print_students()
   # Call method to see if user wants to apply any filter criteria
-  filter_output(student_dir)
+  filter_output()
 
-  if student_dir.print_output_empty
+  if @student_dir.print_output_empty
     puts "Your list is empty. Nothing will be printed"
     return
   end
 
   puts "Enter 'yes' to sort your output by cohort, hit enter for standard output"
-  gets.chomp.downcase == "yes" ? student_dir.print_by_cohort : student_dir.print
+  gets.chomp.downcase == "yes" ? @student_dir.print_by_cohort : @student_dir.print
 
 end
 
@@ -73,10 +77,10 @@ def input_field(input_message, multiple=false, is_symbol=false)
   return is_symbol ? final_input.downcase.to_sym : final_input
 end
 
-def filter_output(student_dir)
+def filter_output()
 
   # Reset visible status for entire list
-  student_dir.set_all_visible
+  @student_dir.set_all_visible
 
   # Filter option for start name string match
   puts "You can filter output based on name characters, name length or student cohort"
@@ -95,7 +99,7 @@ def filter_output(student_dir)
   puts "Enter a specific cohort to print or hit enter to ignore"
   filter_cohort = gets.chomp
 
-  student_dir.entries.each do |student|
+  @student_dir.entries.each do |student|
     student.visible = false
     # Check student cohort
     if !filter_cohort.empty?
@@ -119,11 +123,5 @@ def filter_output(student_dir)
   end
 
 end
-
-# Call methods to print student list
-# input_students
-# print_header
-# print(students)
-# print_footer(students)
 
 interactive_menu
