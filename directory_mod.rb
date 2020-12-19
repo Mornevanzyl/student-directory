@@ -14,6 +14,7 @@ end
 def print_menu
   puts "1. Input the students"
   puts "2. Show the students"
+  puts "3. Save the list to students.csv"
   puts "9. Exit"
 end
 
@@ -23,6 +24,8 @@ def process(selection)
     input_students()
   when "2"
     print_students()
+  when "3"
+    save_students()
   when "9"
     exit
   else
@@ -61,6 +64,19 @@ def print_students()
 
 end
 
+def save_students
+  # Open file to save student list
+  file = File.open("students.csv", "w")
+
+  # Iterate over student list and write to csv file
+  @student_dir.entries.each do |student|
+    student_data = [student.name, student.cohort, student.country_of_origin, student.hobbies]
+    csv_line = student_data.join(',')
+    file.puts(csv_line)
+  end
+
+end
+
 def input_field(input_message, multiple=false, is_symbol=false)
   final_input = multiple ? [] : ""
   puts input_message
@@ -71,8 +87,8 @@ def input_field(input_message, multiple=false, is_symbol=false)
       final_input << input
     end
   else
-    # final_input = gets.chomp.capitalize
-    final_input = gets.gsub(/\s|\n$/, "")
+    final_input = gets.chomp.capitalize
+    # final_input = gets.gsub(/\s|\n$/, "")
   end
   return is_symbol ? final_input.downcase.to_sym : final_input
 end
