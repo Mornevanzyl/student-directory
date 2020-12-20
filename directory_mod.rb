@@ -15,6 +15,7 @@ def print_menu
   puts "1. Input the students"
   puts "2. Show the students"
   puts "3. Save the list to students.csv"
+  puts "4. Load the list from students.csv"
   puts "9. Exit"
 end
 
@@ -26,6 +27,8 @@ def process(selection)
     print_students()
   when "3"
     save_students()
+  when "4"
+    load_students()
   when "9"
     exit
   else
@@ -74,7 +77,25 @@ def save_students
     csv_line = student_data.join(',')
     file.puts(csv_line)
   end
+end
 
+def load_students
+  load_count = 0
+  file = File.open("students.csv", "r")
+  file.readlines.each do |line|
+    a_line = line.chomp.split(",")
+    name, cohort, country = a_line
+    hobbies = []
+    a_line.each_with_index do |el, i|
+      if i > 2
+        hobbies << el
+      end
+    end
+    # Add students to list
+    @student_dir.add_entry(Student.new(name, cohort, country, hobbies))
+    load_count += 1
+  end
+  puts "#{load_count} students successfully loaded from students.csv"
 end
 
 def input_field(input_message, multiple=false, is_symbol=false)
