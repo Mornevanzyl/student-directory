@@ -3,6 +3,7 @@ require './class_student'
 
 # Instantiate our directory class
 @student_dir = Directory.new('student', 'villain academy')
+@filename = "students.csv"
 
 def interactive_menu
   # Try load students from file if filename included as argument
@@ -17,7 +18,7 @@ end
 def print_menu
   puts "1. Input the students"
   puts "2. Show the students"
-  puts "3. Save the list to students.csv"
+  puts "3. Save the list to the session file"
   puts "4. Load the list from students.csv"
   puts "9. Exit"
 end
@@ -25,13 +26,13 @@ end
 def process(selection)
   case selection
   when "1"
-    input_students()
+    puts input_students()
   when "2"
     print_students()
   when "3"
-    save_students()
+    puts save_students()
   when "4"
-    load_students()
+    puts load_students()
   when "9"
     exit
   else
@@ -40,6 +41,7 @@ def process(selection)
 end
 
 def input_students()
+  add_count = 0
 
   puts "Let's capture some student data: -"
   puts "To finish, just hit return twice"
@@ -51,8 +53,9 @@ def input_students()
     country = input_field("Enter student country of origin")
     hobbies = input_field("Enter one or more hobbies, return twice to finish", true)
     add_student(name, cohort, country, hobbies)
+    add_count += 1
   end
-
+  return "#{add_count} studends successfully added."
 end
 
 def print_students()
@@ -70,20 +73,24 @@ def print_students()
 end
 
 def save_students
+  save_count = 0
   # Open file to save student list
-  file = File.open("students.csv", "w")
+  file = File.open(@filename, "w")
 
   # Iterate over student list and write to csv file
   @student_dir.entries.each do |student|
     student_data = [student.name, student.cohort, student.country_of_origin, student.hobbies]
     csv_line = student_data.join(',')
     file.puts(csv_line)
+    save_count += 1
   end
+  file.close
+  return "#{save_count} student records written to #{@filename}"
 end
 
-def load_students(filename = "students.csv")
+def load_students()
   load_count = 0
-  file = File.open(filename, "r")
+  file = File.open(@filename, "r")
   file.readlines.each do |line|
     a_line = line.chomp.split(",")
     name, cohort, country = a_line
@@ -98,7 +105,7 @@ def load_students(filename = "students.csv")
     load_count += 1
   end
   file.close
-  puts "#{load_count} students successfully loaded from students.csv"
+  return "#{load_count} students successfully loaded from #{@filename}"
 end
 
 def add_student(name, cohort, country, hobbies)
@@ -106,12 +113,17 @@ def add_student(name, cohort, country, hobbies)
 end
 
 def try_load_students
-  filename = ARGV.first.nil? ? "students.csv" : ARGV.first
-  return if filename.nil?
-  if File.exists?(filename)
-    load_students(filename)
+  @filename = ARGV.first if !ARGV.first.nil?
+
+  puts "The program has detected a default session file. Would you like to change it?"
+  puts "Enter an alternative filename or hit enter to continue with #{@filename}"
+  alt_file = STDIN.gets.chomp
+  @filename = alt_file if !alt_file.empty?
+
+  if File.exists?(@filename)
+    puts load_students()
   else
-    puts "Sorry, #{filename} doesn't exist. Please retry with a valid filename"
+    puts "Sorry, #{@filename} doesn't exist. Please retry with a valid filename"
     exit
   end
 end
