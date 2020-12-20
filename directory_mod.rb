@@ -88,10 +88,9 @@ def save_students
   return "#{save_count} student records written to #{@filename}"
 end
 
-def load_students()
+def load_students
   load_count = 0
-  file = File.open(@filename, "r")
-  file.readlines.each do |line|
+  File.foreach(@filename) do |line|
     a_line = line.chomp.split(",")
     name, cohort, country = a_line
     hobbies = []
@@ -104,7 +103,6 @@ def load_students()
     add_student(name, cohort, country, hobbies)
     load_count += 1
   end
-  file.close
   return "#{load_count} students successfully loaded from #{@filename}"
 end
 
@@ -120,7 +118,7 @@ def try_load_students
   alt_file = STDIN.gets.chomp
   @filename = alt_file if !alt_file.empty?
 
-  if File.exists?(@filename)
+  if File.exist?(@filename)
     puts load_students()
   else
     puts "Sorry, #{@filename} doesn't exist. Please retry with a valid filename"
