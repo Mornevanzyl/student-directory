@@ -5,9 +5,12 @@ require './class_student'
 @student_dir = Directory.new('student', 'villain academy')
 
 def interactive_menu
+  # Try load students from file if filename included as argument
+  try_load_students
+
   loop do
     print_menu
-    process(gets.chomp)
+    process(STDIN.gets.chomp)
   end
 end
 
@@ -63,7 +66,7 @@ def print_students()
   end
 
   puts "Enter 'yes' to sort your output by cohort, hit enter for standard output"
-  gets.chomp.downcase == "yes" ? @student_dir.print_by_cohort : @student_dir.print
+  STDIN.gets.chomp.downcase == "yes" ? @student_dir.print_by_cohort : @student_dir.print
 
 end
 
@@ -79,9 +82,9 @@ def save_students
   end
 end
 
-def load_students
+def load_students(filename = "students.csv")
   load_count = 0
-  file = File.open("students.csv", "r")
+  file = File.open(filename, "r")
   file.readlines.each do |line|
     a_line = line.chomp.split(",")
     name, cohort, country = a_line
@@ -95,7 +98,19 @@ def load_students
     @student_dir.add_entry(Student.new(name, cohort, country, hobbies))
     load_count += 1
   end
+  file.close
   puts "#{load_count} students successfully loaded from students.csv"
+end
+
+def try_load_students
+  filename = ARGV.first
+  return if filename.nil?
+  if File.exists?(filename)
+    load_students(filename)
+  else
+    puts "Sorry, #{filename} doesn't exist. Please retry with a valid filename"
+    exit
+  end
 end
 
 def input_field(input_message, multiple=false, is_symbol=false)
@@ -103,13 +118,13 @@ def input_field(input_message, multiple=false, is_symbol=false)
   puts input_message
   if multiple
     while true do
-      input = gets.chomp.capitalize
+      input = STDIN.gets.chomp.capitalize
       break if input.empty?
       final_input << input
     end
   else
-    final_input = gets.chomp.capitalize
-    # final_input = gets.gsub(/\s|\n$/, "")
+    final_input = STDIN.gets.chomp.capitalize
+    # final_input = STDIN.gets.gsub(/\s|\n$/, "")
   end
   return is_symbol ? final_input.downcase.to_sym : final_input
 end
@@ -123,18 +138,18 @@ def filter_output()
   puts "You can filter output based on name characters, name length or student cohort"
   puts "Would you like to apply any filter criteria? Enter 'yes' or leave empty to skip"
 
-  return if gets.chomp.empty?
+  return if STDIN.gets.chomp.empty?
 
   puts "Enter name search character(s) or hit enter to ignore"
-  filter_string = gets.chomp.capitalize
+  filter_string = STDIN.gets.chomp.capitalize
 
   # Filter option for maximum name length
   puts "Enter maximum length of name or hit enter to ignore this option"
-  filter_length = gets.chomp
+  filter_length = STDIN.gets.chomp
 
   # Filter option for cohort
   puts "Enter a specific cohort to print or hit enter to ignore"
-  filter_cohort = gets.chomp
+  filter_cohort = STDIN.gets.chomp
 
   @student_dir.entries.each do |student|
     student.visible = false
