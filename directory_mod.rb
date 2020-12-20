@@ -50,8 +50,7 @@ def input_students()
     cohort = input_field("Enter the student cohort", nil, true)
     country = input_field("Enter student country of origin")
     hobbies = input_field("Enter one or more hobbies, return twice to finish", true)
-    student = Student.new(name, cohort, country, hobbies)
-    @student_dir.add_entry(student)
+    add_student(name, cohort, country, hobbies)
   end
 
 end
@@ -95,15 +94,19 @@ def load_students(filename = "students.csv")
       end
     end
     # Add students to list
-    @student_dir.add_entry(Student.new(name, cohort, country, hobbies))
+    add_student(name, cohort, country, hobbies)
     load_count += 1
   end
   file.close
   puts "#{load_count} students successfully loaded from students.csv"
 end
 
+def add_student(name, cohort, country, hobbies)
+  @student_dir.add_entry(Student.new(name, cohort, country, hobbies))
+end
+
 def try_load_students
-  filename = ARGV.first
+  filename = ARGV.first.nil? ? "students.csv" : ARGV.first
   return if filename.nil?
   if File.exists?(filename)
     load_students(filename)
