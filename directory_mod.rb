@@ -1,5 +1,6 @@
 require './class_directory'
 require './class_student'
+require 'csv'
 
 # Instantiate our directory class
 @student_dir = Directory.new('student', 'villain academy')
@@ -75,26 +76,24 @@ end
 def save_students
   save_count = 0
   # Open file to save student list
-  file = File.open(@filename, "w")
-
-  # Iterate over student list and write to csv file
-  @student_dir.entries.each do |student|
-    student_data = [student.name, student.cohort, student.country_of_origin, student.hobbies]
-    csv_line = student_data.join(',')
-    file.puts(csv_line)
-    save_count += 1
+  CSV.open(@filename, "wb") do |csv|
+    # Iterate over student list and write to csv file
+    @student_dir.entries.each do |student|
+      array_student = [student.name, student.cohort, student.country_of_origin]
+      student.hobbies.each { |hobby| array_student << hobby }
+      csv << array_student
+      save_count += 1
+    end
   end
-  file.close
   return "#{save_count} student records written to #{@filename}"
 end
 
 def load_students
   load_count = 0
-  File.foreach(@filename) do |line|
-    a_line = line.chomp.split(",")
-    name, cohort, country = a_line
+  CSV.foreach(@filename) do |row|
+    name, cohort, country = row
     hobbies = []
-    a_line.each_with_index do |el, i|
+    row.each_with_index do |el, i|
       if i > 2
         hobbies << el
       end
